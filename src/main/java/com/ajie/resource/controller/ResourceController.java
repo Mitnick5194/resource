@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ajie.api.ip.IpQueryVo;
-import com.ajie.api.weixin.vo.JsConfig;
 import com.ajie.chilli.common.ResponseResult;
 import com.ajie.chilli.utils.Toolkits;
 import com.ajie.resource.ResourceService;
@@ -36,8 +35,6 @@ public class ResourceController {
 		WeixinResource wxResource = resourceService.getWeixinResource();
 		if (null == wxResource)
 			return ResponseResult.empty();
-		JsConfig config = wxResource.getJsConfiig();
-		config.sign("http://www.ajie18.top/blog");
 		return ResponseResult.success(wxResource);
 	}
 

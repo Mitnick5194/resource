@@ -16,8 +16,8 @@
 			<artifactId>api</artifactId>
 			<version>1.0.10</version>
 		</dependency>
-		
-			<dependency>
+
+		<dependency>
 			<groupId>com.ajie</groupId>
 			<artifactId>web</artifactId>
 			<version>1.0.10</version>
@@ -77,6 +77,56 @@
 					<charset>utf-8</charset>
 					<uriEncoding>utf-8</uriEncoding>
 				</configuration>
+			</plugin>
+
+			<!-- 打包模块 -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+						<!-- D:\maven\repository\com\ajie\resource\1.0.10 -->
+							<outputDirectory>D:\maven\repository\com\ajie\resource\1.0.10</outputDirectory>
+							<classifier>1.0.10</classifier>
+							<includes>
+								<include>**/resource/**</include>
+							</includes>
+							<excludes>
+								<exclude>**/controller/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>D:\maven\repository\com\ajie\resource\1.0.10</outputDirectory>
+							<classifier>1.0.10-resource</classifier>
+							<includes>
+								<include>**/resource/**</include>
+							</includes>
+							<excludes>
+								<exclude>**/controller/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

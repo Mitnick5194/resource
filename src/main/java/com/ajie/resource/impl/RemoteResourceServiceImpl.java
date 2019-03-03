@@ -13,7 +13,6 @@ import com.ajie.chilli.utils.HttpClientUtil;
 import com.ajie.chilli.utils.common.JsonUtils;
 import com.ajie.resource.ResourceService;
 import com.ajie.resource.WeixinResource;
-import com.alibaba.fastjson.JSONObject;
 
 /**
  *
@@ -41,8 +40,14 @@ public class RemoteResourceServiceImpl implements ResourceService {
 		String url = genUrl("getwxresource");
 		try {
 			String ret = HttpClientUtil.doGet(url);
+			if (null == ret) {
+				if (logger.isTraceEnabled()) {
+					logger.trace("远程获取WeixinResource失败");
+				}
+				return null;
+			}
 			ResponseResult response = JsonUtils.toBean(ret, ResponseResult.class);
-			return JsonUtils.toBean((JSONObject) response.getData(), WeixinResource.class);
+			return response.getData(WeixinResource.class);
 		} catch (IOException e) {
 			logger.error("", e);
 		}
@@ -61,7 +66,8 @@ public class RemoteResourceServiceImpl implements ResourceService {
 				return null;
 			}
 			ResponseResult response = JsonUtils.toBean(ret, ResponseResult.class);
-			return JsonUtils.toBean((JSONObject) response.getData(), IpQueryVo.class);
+			IpQueryVo vo = response.getData(IpQueryVo.class);
+			return vo;
 		} catch (IOException e) {
 			logger.error("", e);
 		}

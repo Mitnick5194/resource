@@ -1,5 +1,7 @@
 package com.ajie.resource.impl;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import com.ajie.api.weixin.vo.JsConfig;
 import com.ajie.chilli.cache.redis.RedisClient;
 import com.ajie.chilli.cache.redis.RedisException;
 import com.ajie.chilli.remote.RemoteCmd;
+import com.ajie.chilli.support.TimingTask;
 import com.ajie.chilli.support.Worker;
 import com.ajie.resource.ResourceService;
 import com.ajie.resource.WeixinResource;
@@ -47,6 +50,8 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 	public ResourceServiceImpl() {
 		ipQueryApi = new IpQueryApiImpl();
 		weixinApi = new WeixinApiImpl();
+		TimingTask.createTimingTask("update-resource", this, new Date(),
+				WeixinResource.REDIS_EXPIRE_TIME * 1000);
 	}
 
 	public void setRemoteCmd(RemoteCmd remoteCmd) {
@@ -84,8 +89,15 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 	@Override
 	public WeixinResource getWeixinResource() {
 		String token = redisClient.get(WeixinResource.REDIS_KEY_TOKEN);
+		String jsTicket = redisClient.get(WeixinResource.REDIS_KEY_JSTICKET);
 		if (null == token) {
 			token = weixinApi.getAccessToken(this.appId, this.secret);
+			if (null == token) {
+				logger.error("无法刷新access token");
+				return null;
+			}
+			// token更新了 jsTicket一定要更新
+			jsTicket = getJsTicket(token);
 			try {
 				redisClient.set(WeixinResource.REDIS_KEY_TOKEN, token);
 				redisClient
@@ -93,19 +105,8 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 			} catch (RedisException e) {
 				logger.error("", e);
 			}
-
-		}
-		String jsTicket = redisClient.get(WeixinResource.REDIS_KEY_JSTICKET);
-		if (null == jsTicket) {
-			jsTicket = weixinApi.getJsTicket(token);
-			try {
-				redisClient.set(WeixinResource.REDIS_KEY_JSTICKET, jsTicket);
-				redisClient.expire(WeixinResource.REDIS_KEY_JSTICKET,
-						WeixinResource.REDIS_EXPIRE_TIME);
-			} catch (RedisException e) {
-				logger.error("", e);
-			}
-
+		} else if (null == jsTicket) {
+			jsTicket = getJsTicket(token);
 		}
 		WeixinResourceVo vo = new WeixinResourceVo();
 		vo.setAccessToken(token);
@@ -115,9 +116,24 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 		return vo;
 	}
 
+	private String getJsTicket(String token) {
+		String jsTicket = weixinApi.getJsTicket(token);
+		if (null == jsTicket) {
+			logger.error("无法刷新jsTicket");
+			return null;
+		}
+		try {
+			redisClient.set(WeixinResource.REDIS_KEY_JSTICKET, jsTicket);
+			redisClient.expire(WeixinResource.REDIS_KEY_JSTICKET, WeixinResource.REDIS_EXPIRE_TIME);
+		} catch (RedisException e) {
+			logger.error("", e);
+		}
+		return jsTicket;
+	}
+
 	@Override
 	public IpQueryVo queryIpAddress(String ip, int provider) {
-		if(0 == provider){
+		if (0 == provider) {
 			provider = IpQueryApi.PROVIDER_CMD.getId();
 		}
 		if (provider == IpQueryApi.PROVIDER_GAODE.getId()) {

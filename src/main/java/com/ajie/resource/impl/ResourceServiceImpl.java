@@ -45,6 +45,9 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 	/** 高德地图的key */
 	private String gaodeKey;
 
+	/** 高德地图的key */
+	private String ipstackAccessKey;
+
 	private RemoteCmd remoteCmd;
 
 	public ResourceServiceImpl() {
@@ -56,6 +59,7 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 
 	public void setRemoteCmd(RemoteCmd remoteCmd) {
 		this.remoteCmd = remoteCmd;
+		ipQueryApi.injectRemoteCmd(this.remoteCmd);
 	}
 
 	public void setAppid(String appId) {
@@ -84,6 +88,12 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 
 	public void setGaodeKey(String key) {
 		this.gaodeKey = key;
+		ipQueryApi.injectGaodeKey(gaodeKey);
+	}
+
+	public void setIpstackAccessKey(String key) {
+		this.ipstackAccessKey = key;
+		ipQueryApi.injectIpStackAccessKey(ipstackAccessKey);
 	}
 
 	@Override
@@ -135,11 +145,6 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 	public IpQueryVo queryIpAddress(String ip, int provider) {
 		if (0 == provider) {
 			provider = IpQueryApi.PROVIDER_CMD.getId();
-		}
-		if (provider == IpQueryApi.PROVIDER_GAODE.getId()) {
-			ipQueryApi.injectGaodeKey(gaodeKey);
-		} else if (provider == IpQueryApi.PROVIDER_CMD.getId()) {
-			ipQueryApi.injectRemoteCmd(remoteCmd);
 		}
 		IpQueryVo vo;
 		try {

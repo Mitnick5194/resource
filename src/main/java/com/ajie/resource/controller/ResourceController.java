@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ajie.api.ip.IpQueryApi;
 import com.ajie.api.ip.IpQueryVo;
 import com.ajie.chilli.common.ResponseResult;
 import com.ajie.chilli.utils.Toolkits;
@@ -42,7 +43,8 @@ public class ResourceController {
 	@RequestMapping("/queryIp")
 	public ResponseResult queryIp(HttpServletRequest request, HttpServletResponse response) {
 		String ip = request.getParameter("ip");
-		int provider = Toolkits.toInt(request.getParameter("provider"), 0);
+		int provider = Toolkits.toInt(request.getParameter("provider"),
+				IpQueryApi.PROVIDER_IPSTACK.getId());
 		IpQueryVo vo = resourceService.queryIpAddress(ip, provider);
 		if (null == vo)
 			return ResponseResult.empty();
@@ -53,7 +55,7 @@ public class ResourceController {
 	@RequestMapping("/remoteQueryIp")
 	public ResponseResult remoteQueryIp(HttpServletRequest request, HttpServletResponse response) {
 		String ip = request.getParameter("ip");
-		IpQueryVo vo = remoteService.queryIpAddress(ip, 0);
+		IpQueryVo vo = remoteService.queryIpAddress(ip, IpQueryApi.PROVIDER_IPSTACK.getId());
 		if (null == vo)
 			return ResponseResult.empty();
 		return ResponseResult.success(vo);

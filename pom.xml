@@ -89,7 +89,7 @@
 						</goals>
 						<phase>package</phase>
 						<configuration>
-						<!-- D:\maven\repository\com\ajie\resource\1.0.10 -->
+							<!-- D:\maven\repository\com\ajie\resource\1.0.10 -->
 							<outputDirectory>D:\maven\repository\com\ajie\resource\1.0.10</outputDirectory>
 							<classifier>1.0.10</classifier>
 							<includes>
@@ -127,6 +127,23 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.ajie</groupId>
+				<artifactId>custom-maven-plugin</artifactId>
+				<version>1.0.10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<server>
+						<propertyFilePath>properties/server.properties</propertyFilePath>
+					</server>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

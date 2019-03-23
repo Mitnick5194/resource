@@ -55,9 +55,11 @@
 		<property name="secret" value="${weixin-secret}" />
 		<property name="gaodeKey" value="${gaode-ip-search-key}" />
 		<property name="remoteCmd" ref="remoteCmd" />
+		<property name="ipstackAccessKey" value="${ipstack-access-key}" />
 	</bean>
-	
-	<bean id="remoteResourceService" name="remoteResourceService" class="com.ajie.resource.impl.RemoteResourceServiceImpl">
+
+	<bean id="remoteResourceService" name="remoteResourceService"
+		class="com.ajie.resource.impl.RemoteResourceServiceImpl">
 		<property name="resourceURL" value="http://localhost:8082/resource"></property>
 	</bean>
 

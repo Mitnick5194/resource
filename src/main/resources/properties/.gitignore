@@ -2,3 +2,4 @@
 /redis-conf.properties
 /sso.properties
 /ssh.properties
+/server.properties

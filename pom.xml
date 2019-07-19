@@ -132,7 +132,7 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>install</goal>
+							<goal>package</goal>
 						</goals>
 					</execution>
 				</executions>

@@ -40,10 +40,10 @@ public class RemoteResourceServiceImpl implements ResourceService {
 		String url = genUrl("getwxresource");
 		try {
 			String ret = HttpClientUtil.doGet(url);
+			if (logger.isTraceEnabled()) {
+				logger.trace("远程获取WeixinResource失败");
+			}
 			if (null == ret) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("远程获取WeixinResource失败");
-				}
 				return null;
 			}
 			ResponseResult response = JsonUtils.toBean(ret, ResponseResult.class);

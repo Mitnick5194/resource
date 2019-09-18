@@ -1,5 +1,0 @@
-mvn install:install-file -Dfile=D:\myworkspace\resource\target\resource-1.0.10.jar -DgroupId=com.ajie -DartifactId=resource -Dversion=1.0.10 -Dpackaging=jar
- 
-#复制源码
-copy /Y D:\myworkspace\resource\target\resource-package\resource-resource-1.0.10.jar D:\maven\repository\com\ajie\resource\1.0.10\ 
-

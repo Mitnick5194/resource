@@ -25,6 +25,16 @@
 						<value>application/json;charset=UTF-8</value>
 					</list>
 				</property>
+				<property name="features">
+					<list>
+						<value>WriteMapNullValue</value>
+						<value>WriteNullNumberAsZero</value>
+						<value>WriteNullListAsEmpty</value>
+						<value>WriteNullStringAsEmpty</value>
+						<value>WriteNullBooleanAsFalse</value>
+						<value>WriteDateUseDateFormat</value>
+					</list>
+				</property>
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>

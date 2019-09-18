@@ -87,7 +87,8 @@
 						<phase>package</phase>
 						<configuration>
 							<!-- D:\maven\repository\com\ajie\resource\1.0.10 -->
-							<outputDirectory>D:\maven\repository\com\ajie\resource\1.0.10</outputDirectory>
+							<outputDirectory>E:\myworkspace\resource\target\rs-resource</outputDirectory>
+							<!-- 这个名称会影响整个项目打包后的名称 -->
 							<classifier>1.0.10</classifier>
 							<includes>
 								<include>**/resource/**</include>
@@ -113,8 +114,8 @@
 							<goal>jar-no-fork</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>D:\maven\repository\com\ajie\resource\1.0.10</outputDirectory>
-							<classifier>1.0.10-resource</classifier>
+							<outputDirectory>E:\myworkspace\resource\target\rs-resource</outputDirectory>
+							<classifier>1.0.10-sources</classifier>
 							<includes>
 								<include>**/resource/**</include>
 							</includes>

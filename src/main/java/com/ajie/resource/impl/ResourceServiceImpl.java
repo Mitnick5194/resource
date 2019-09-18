@@ -17,6 +17,7 @@ import com.ajie.chilli.cache.redis.RedisException;
 import com.ajie.chilli.remote.RemoteCmd;
 import com.ajie.chilli.support.TimingTask;
 import com.ajie.chilli.support.Worker;
+import com.ajie.chilli.thread.ThreadPool;
 import com.ajie.resource.ResourceService;
 import com.ajie.resource.WeixinResource;
 import com.ajie.resource.vo.WeixinResourceVo;
@@ -28,7 +29,8 @@ import com.ajie.resource.vo.WeixinResourceVo;
  *
  */
 public class ResourceServiceImpl implements ResourceService, Worker {
-	private static Logger logger = LoggerFactory.getLogger(ResourceServiceImpl.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(ResourceServiceImpl.class);
 
 	private IpQueryApi ipQueryApi;
 
@@ -48,13 +50,20 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 	/** 高德地图的key */
 	private String ipstackAccessKey;
 
+	/** 远程命令服务 */
 	private RemoteCmd remoteCmd;
+	/** 线程池 */
+	private ThreadPool threadPool;
 
 	public ResourceServiceImpl() {
 		ipQueryApi = new IpQueryApiImpl();
 		weixinApi = new WeixinApiImpl();
-		TimingTask.createTimingTask("update-resource", this, new Date(),
-				WeixinResource.REDIS_EXPIRE_TIME * 1000);
+	}
+
+	public void setThreadPool(ThreadPool pool) {
+		threadPool = pool;
+		TimingTask.createTimingTask(threadPool, "update-resource", this,
+				new Date(), WeixinResource.REDIS_EXPIRE_TIME * 1000);
 	}
 
 	public void setRemoteCmd(RemoteCmd remoteCmd) {
@@ -110,8 +119,8 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 			jsTicket = getJsTicket(token);
 			try {
 				redisClient.set(WeixinResource.REDIS_KEY_TOKEN, token);
-				redisClient
-						.expire(WeixinResource.REDIS_KEY_TOKEN, WeixinResource.REDIS_EXPIRE_TIME);
+				redisClient.expire(WeixinResource.REDIS_KEY_TOKEN,
+						WeixinResource.REDIS_EXPIRE_TIME);
 			} catch (RedisException e) {
 				logger.error("", e);
 			}
@@ -134,7 +143,8 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 		}
 		try {
 			redisClient.set(WeixinResource.REDIS_KEY_JSTICKET, jsTicket);
-			redisClient.expire(WeixinResource.REDIS_KEY_JSTICKET, WeixinResource.REDIS_EXPIRE_TIME);
+			redisClient.expire(WeixinResource.REDIS_KEY_JSTICKET,
+					WeixinResource.REDIS_EXPIRE_TIME);
 		} catch (RedisException e) {
 			logger.error("", e);
 		}
@@ -152,7 +162,7 @@ public class ResourceServiceImpl implements ResourceService, Worker {
 			return vo;
 		} catch (ApiInvokeException e) {
 		}
-		return null;
+		return IpQueryVo._nil;
 	}
 
 	@Override
